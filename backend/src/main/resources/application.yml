@@ -1,0 +1,28 @@
+spring:
+  mail:
+    host: smtp.yeah.net
+    username: sparkle320@yeah.net
+    password: FSUGYQVLYEVHBONC
+  rabbitmq:
+    addresses: 121.199.60.19
+    username: rabbitmq
+    password: Kai1670858738
+    virtual-host: /
+  security:
+    filter:
+      order: -100
+    jwt:
+      key: abcd
+      expire: 7
+  data:
+    redis:
+      host: 121.199.60.19
+      port: 6379
+      password: redis_ChFGDH
+      timeout: 2000
+      database: 0
+  datasource:
+    username: test
+    password: sD7zmF33nRXaWRRr
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://121.199.60.19:3306/test
