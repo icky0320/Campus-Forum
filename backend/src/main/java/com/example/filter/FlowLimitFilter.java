@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @Date: 2024/9/17  下午3:38
  */
 @Component
-@Order(Const.ORDER_LIMIT)
+@Order(Const.ORDER_FLOW_LIMIT)
 public class FlowLimitFilter extends HttpFilter {
 
     @Resource

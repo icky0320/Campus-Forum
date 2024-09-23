@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 @Component
 @Order(Const.ORDER_CORS)
-public class corsFilter extends HttpFilter {
+public class CorsFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest request,
                             HttpServletResponse response,

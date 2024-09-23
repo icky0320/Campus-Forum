@@ -3,14 +3,14 @@ package com.example.config;
 import com.example.entity.RestBean;
 import com.example.entity.dto.Account;
 import com.example.entity.vo.response.AuthorizeVO;
-import com.example.filter.JwtAuthorizeFilter;
+import com.example.filter.JwtAuthenticationFilter;
 import com.example.service.AccountService;
+import com.example.utils.Const;
 import com.example.utils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,12 +20,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,7 +40,7 @@ public class SecurityConfiguration {
     JwtUtils utils;
 
     @Resource
-    JwtAuthorizeFilter jwtAuthorizeFilter;
+    JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Resource
     AccountService service;
@@ -53,8 +49,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(conf -> conf
-                        .requestMatchers("/api/auth/**","/error").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/auth/**", "/error").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().hasAnyRole(Const.ROLE_DEFAULT)
                 )
                 .formLogin(conf -> conf
                         .loginProcessingUrl("/api/auth/login")
@@ -69,7 +67,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(conf -> conf
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthorizeFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -80,7 +78,7 @@ public class SecurityConfiguration {
         response.setCharacterEncoding("utf-8");
         User user = (User) authentication.getPrincipal();
         Account account = service.findAccountByNameOrEmail(user.getUsername());
-        String token = utils.createJwt(user, account.getId(), account.getUsername());
+        String token = utils.createJwt(user, account.getUsername(), account.getId());
         AuthorizeVO vo = account.asViewObject(AuthorizeVO.class, v ->{
             v.setExpire(utils.expireTime());
             v.setToken(token);
@@ -94,7 +92,7 @@ public class SecurityConfiguration {
         response.setContentType("application/json;charset=utf-8");
         PrintWriter writer = response.getWriter();
         String authorization = request.getHeader("Authorization");
-        if(utils.invalidJwt(authorization)){
+        if(utils.invalidateJwt(authorization)){
             writer.write(RestBean.success().asJsonString());
         }else{
             writer.write(RestBean.failure(400,"退出登陆失败").asJsonString());

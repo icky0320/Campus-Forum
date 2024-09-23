@@ -1,21 +1,21 @@
 package com.example.entity.vo.response;
 
-import lombok.Data;
-
-import java.util.Date;
-
 /**
  * @Author: 程凯
  * @Package: com.example.entity.vo.response
  * @Project: jwt
- * @Name: AuthorizeVO
- * @Date: 2024/9/14  下午2:18
+ * @Name: AccountVO
+ * @Date: 2024/9/23  下午5:20
  */
+import lombok.Data;
+
+import java.util.Date;
+
 @Data
-public class AuthorizeVO {
+public class AccountVO {
     String username;
+    String email;
     String role;
-    String token;
     String avatar;
-    Date expire;
+    Date registerTime;
 }

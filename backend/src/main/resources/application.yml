@@ -14,6 +14,21 @@ spring:
     jwt:
       key: abcd
       expire: 7
+      limit:
+        base: 10
+        upgrade: 300
+        frequency: 30
+  web:
+    verify:
+      mail-limit: 60
+    flow:
+      period: 3
+      limit: 50
+      block: 30
+    cors:
+      origin: '*'
+      credentials: false
+      methods: '*'
   data:
     redis:
       host: 121.199.60.19
@@ -26,3 +41,7 @@ spring:
     password: sD7zmF33nRXaWRRr
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://121.199.60.19:3306/test
+  minio:
+    endpoint: 'http://121.199.60.19:9000/'
+    username: 'minio_n2ywYP'
+    password: 'minio_5KrHs5'

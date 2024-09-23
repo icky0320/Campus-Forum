@@ -10,11 +10,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * @Author: 程凯
- * @Package: com.example.entity.dto
- * @Project: jwt
- * @Name: Account
- * @Date: 2024/9/14  下午8:36
+ * 数据库中的用户信息
  */
 @Data
 @TableName("db_account")
@@ -26,5 +22,6 @@ public class Account implements BaseData {
     String password;
     String email;
     String role;
+    String avatar;
     Date registerTime;
 }
