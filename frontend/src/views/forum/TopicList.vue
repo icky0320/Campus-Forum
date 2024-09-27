@@ -1,13 +1,39 @@
 <script setup>
 
 import LightCard from "@/components/LightCard.vue";
-import {Calendar, CollectionTag, EditPen, Link} from "@element-plus/icons-vue";
+import {Calendar, CollectionTag, EditPen, Link, MoonNight} from "@element-plus/icons-vue";
 import Weather from "@/components/Weather.vue";
-import {computed} from "vue";
+import {computed, reactive} from "vue";
+import {get} from "@/net/index.js";
+import {ElMessage} from "element-plus";
 
+const weather = reactive({
+    location: {},
+    now: {},
+    success: false
+})
 const today = computed(() => {
     const date = new Date()
     return `${date.getFullYear()} 年 ${date.getMonth() + 1} 月 ${date.getDate()} 日`
+})
+
+navigator.geolocation.getCurrentPosition(position => {
+    const longitude = position.coords.longitude
+    const latitude = position.coords.latitude
+    get(`/api/forum/weather?longitude=${longitude}&latitude=${latitude}`, data => {
+        Object.assign(weather, data)
+        weather.success = true
+    })
+}, error =>{
+    console.info(error)
+    ElMessage.warning('位置信息获取超时，请检查网络设置')
+    get(`/api/forum/weather?longitude=116.40529&latitude=39.90499`,data=>{
+        Object.assign(weather, data)
+        weather.success(true)
+    })
+},{
+    timeout:10000,
+    enableHighAccuracy: true
 })
 </script>
 
@@ -46,16 +72,16 @@ const today = computed(() => {
                         天气信息
                     </div>
                     <el-divider style="margin: 10px 0"/>
-                    <weather/>
+                    <weather :data="weather"/>
                 </light-card>
                 <light-card style="margin-top: 10px">
                     <div class="info-text">
-                        <div>当前日期</div>
+                        <div>当前日期：</div>
                         <div>{{today}}</div>
                     </div>
-                    <div>
-                        <div>当前IP地址</div>
-                        <div>127.0.0.1</div>
+                    <div class="info-text">
+                        <div>当前心情：</div>
+                        <div><el-icon><MoonNight/></el-icon></div>
                     </div>
                 </light-card>
                 <div style="font-size: 14px;margin-top: 10px;color: grey;">
