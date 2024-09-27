@@ -33,7 +33,7 @@ spring:
     redis:
       host: 121.199.60.19
       port: 6379
-      password: redis_ChFGDH
+      password: redis_7NiWnP
       timeout: 2000
       database: 0
   datasource:
@@ -45,3 +45,5 @@ spring:
     endpoint: 'http://121.199.60.19:9000/'
     username: 'minio_n2ywYP'
     password: 'minio_5KrHs5'
+  weather:
+    key: 88288b27deaf434ea65d7b09557c2348
