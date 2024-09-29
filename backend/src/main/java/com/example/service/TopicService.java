@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.entity.dto.Topic;
 import com.example.entity.dto.TopicType;
 import com.example.entity.vo.request.TopicCreateVO;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
