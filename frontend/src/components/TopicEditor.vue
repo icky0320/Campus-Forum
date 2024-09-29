@@ -1,38 +1,70 @@
 <script setup>
 import {Check, Document} from "@element-plus/icons-vue";
-import {reactive} from "vue";
+import {reactive, computed, ref} from "vue";
 import {Quill, QuillEditor} from "@vueup/vue-quill";
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import ImageResize from "quill-image-resize-vue"
 import {ImageExtend, QuillWatch} from "quill-image-super-solution-module"
 import axios from "axios";
 import {ElMessage} from "element-plus";
-import {accessHeader} from "@/net/index.js";
+import {accessHeader, get, post} from "@/net/index.js";
 
 defineProps({
     show: Boolean
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close','success'])
 
+const refEditor = ref()
 const editor = reactive({
     type: null,
     title: '',
     text: '',
-    loading: false
+    loading: false,
+    types: []
 })
-const types = [
-    {id: 1, name: '日常闲聊', desc: '在这里分享你的各种日常'},
-    {id: 2, name: '真诚交友', desc: '在校园里寻找与自己志同道合的朋友'},
-    {id: 3, name: '问题反馈', desc: '反馈你在校园里遇到的问题'},
-    {id: 4, name: '恋爱官宣', desc: '向大家展示你的恋爱成果'},
-    {id: 5, name: '踩坑记录', desc: '将你遇到的坑分享给大家，防止其他人再次入坑'}
-]
 
+function initEditor() {
+    refEditor.value.setContents('','user')
+    editor.title = ''
+    editor.text = null
+}
+
+function deltaToText(delta){
+    if (!delta.ops) return ""
+    let str = ""
+    for (let op of delta.ops)
+        str += op.insert
+    return str.replace(/\s/g,"")
+}
 
 function submitTopic(){
-    console.info(editor.text)
+    const text = deltaToText(editor.text)
+    if(text.length > 20000) {
+        ElMessage.warning('字数超出限制，无法发布主题！')
+        return
+    }
+    if(!editor.title) {
+        ElMessage.warning('请填写标题！')
+        return
+    }
+    if(!editor.type) {
+        ElMessage.warning('请选择一个合适的帖子类型！')
+        return
+    }
+    post('/api/forum/create-topic',{
+        type: editor.type,
+        title: editor.title,
+        content: editor.text
+    },() => {
+        ElMessage.success('帖子发表成功！')
+        emit('success')
+    })
 }
+
+const contentLength = computed(() => deltaToText(editor.text).length)
+
+get('/api/forum/types',data => editor.types = data)
 
 Quill.register('modules/imageResize',ImageResize)
 Quill.register('modules/ImageExtend',ImageExtend)
@@ -92,6 +124,7 @@ const editorOption = {
     <div>
         <el-drawer :model-value="show"
                    direction="btt"
+                   @open="initEditor"
                    :close-on-click-modal="false"
                    :size="650"
                    @close="emit('close')">
@@ -103,24 +136,24 @@ const editorOption = {
             </template>
             <div style="display: flex;gap: 10px">
                 <div style="width: 150px;">
-                    <el-select v-model="editor.type" placeholder="选择主题类型...">
-                        <el-option v-for="item in types" :value="item.id" :label="item.name"/>
+                    <el-select v-model="editor.type" placeholder="选择主题类型..." :disabled="!editor.types.length">
+                        <el-option v-for="item in editor.types" :value="item.id" :label="item.name"/>
                     </el-select>
                 </div>
                 <div style="flex: 1">
                     <el-input v-model="editor.title" placeholder="请输入帖子标题..." :prefix-icon="Document"
-                                style="height: 100%;"/>
+                                style="height: 100%;" maxlength="30"/>
                 </div>
             </div>
             <div style="margin-top: 15px;height: 460px;overflow: hidden;border-radius: 5px"
-                 v-loading="editor.loading" element-loading-text="正在上传图片，请稍后...">
+                 v-loading="editor.uploading" element-loading-text="正在上传图片，请稍后...">
                 <quill-editor v-model:content="editor.text" style="height: calc(100% - 45px)"
-                              content-type="delta"
+                              content-type="delta" ref="refEditor"
                               placeholder="今天想分享点什么呢..?" :options="editorOption"/>
             </div>
             <div style="display: flex;justify-content: space-between;margin-top: 10px">
                 <div style="color: grey;font-size: 13px">
-                    当前字数200（最大支持2w字）
+                    当前字数 {{contentLength}}（最大支持2w字）
                 </div>
                 <div>
                     <el-button type="success" @click="submitTopic" :icon="Check" plain>立即发表主题</el-button>
