@@ -1,7 +1,7 @@
 package com.example.service.impl;
 
-/**
- * @Author: 程凯
+/*
+  @Author: 程凯
  * @Package: com.example.service.Impl
  * @Project: jwt
  * @Name: ImageServiceImpl
@@ -89,7 +89,7 @@ public class ImageServiceImpl extends ServiceImpl<ImageStoreMapper, StoreImage> 
 
     @Override
     public String uploadImage(MultipartFile file, int id) throws IOException {
-        String key = Const.Forum_IMAGE_COUNTER + id;
+        String key = Const.FORUM_IMAGE_COUNTER + id;
         if (!flowUtils.limitPeriodCounterCheck(key, 20, 3600))
             return null;
         String imageName = UUID.randomUUID().toString().replace("-", "");
