@@ -9,11 +9,13 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import {accessHeader, get, post} from "@/net/index.js";
 import ColorDot from "@/components/ColorDot.vue";
+import {useStore} from "@/store/index.js";
 
 defineProps({
     show: Boolean
 })
 
+const store = useStore()
 const emit = defineEmits(['close','success'])
 
 const refEditor = ref()
@@ -21,8 +23,7 @@ const editor = reactive({
     type: null,
     title: '',
     text: '',
-    loading: false,
-    types: []
+    loading: false
 })
 
 function initEditor() {
@@ -64,8 +65,6 @@ function submitTopic(){
 }
 
 const contentLength = computed(() => deltaToText(editor.text).length)
-
-get('/api/forum/types',data => editor.types = data)
 
 Quill.register('modules/imageResize',ImageResize)
 Quill.register('modules/ImageExtend',ImageExtend)
@@ -137,8 +136,8 @@ const editorOption = {
             </template>
             <div style="display: flex;gap: 10px">
                 <div style="width: 150px;">
-                    <el-select placeholder="选择主题类型..." v-model="editor.type" value-key="id" :disabled="!editor.types.length">
-                        <el-option v-for="item in editor.types" :value="item" :label="item.name">
+                    <el-select placeholder="选择主题类型..." v-model="editor.type" value-key="id" :disabled="!store.forum.types.length">
+                        <el-option v-for="item in store.forum.types" :value="item" :label="item.name">
                             <div>
                                 <color-dot :color="item.color"/>
                                 <span style="margin-left: 5px">{{item.name}}</span>
