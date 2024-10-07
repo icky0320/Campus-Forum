@@ -2,11 +2,13 @@ package com.example.service.impl;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.dto.Topic;
 import com.example.entity.dto.TopicType;
 import com.example.entity.vo.request.TopicCreateVO;
 import com.example.entity.vo.response.TopicPreviewVO;
+import com.example.entity.vo.response.TopicTopVO;
 import com.example.mapper.TopicMapper;
 import com.example.mapper.TopicTypeMapper;
 import com.example.service.TopicService;
@@ -90,7 +92,19 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         if (topics.isEmpty()) return null;
         list = topics.stream().map(this::resolveToPreview).toList();
         cacheUtils.saveListToCache(key, list, 60);
-        return null;
+        return list;
+    }
+
+    @Override
+    public List<TopicTopVO> listTopTopics() {
+        List<Topic> topics = baseMapper.selectList(Wrappers.<Topic>query()
+                .select("id","title","time")
+                .eq("top",1));
+        return topics.stream().map(topic -> {
+            TopicTopVO vo = new TopicTopVO();
+            BeanUtils.copyProperties(topic,vo);
+            return vo;
+        }).toList();
     }
 
     private  TopicPreviewVO resolveToPreview(Topic topic){
