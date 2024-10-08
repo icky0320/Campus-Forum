@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.entity.RestBean;
-import com.example.entity.dto.Topic;
 import com.example.entity.vo.request.TopicCreateVO;
 import com.example.entity.vo.response.*;
 import com.example.service.TopicService;
