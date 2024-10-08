@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -33,5 +34,14 @@ public class WebConfiguration implements WebMvcConfigurer {
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
         paginationInnerInterceptor.setMaxLimit(100L);
         return paginationInnerInterceptor;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")  // 允许的路由
+                .allowedOrigins("http://localhost:5173")  // 允许的源
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // 允许的方法
+                .allowedHeaders("*")  // 允许的头部
+                .allowCredentials(true);  // 允许发送凭证
     }
 }

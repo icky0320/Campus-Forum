@@ -39,8 +39,8 @@ public class ImageController {
     @PostMapping("/avatar")
     public RestBean<String> uploadAvatar(@RequestParam("file") MultipartFile file,
                                          @RequestAttribute(Const.ATTR_USER_ID) int id) throws IOException {
-        if(file.getSize() > 1024 * 100)
-            return RestBean.failure(400, "头像图片不能大于100KB");
+        if(file.getSize() > 1024 * 500)
+            return RestBean.failure(400, "头像图片不能大于500KB");
         log.info("正在进行头像上传操作...");
         String url = service.uploadAvatar(file, id);
         if(url != null) {
