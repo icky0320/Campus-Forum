@@ -137,7 +137,7 @@ const editorOption = {
             <div style="display: flex;gap: 10px">
                 <div style="width: 150px;">
                     <el-select placeholder="选择主题类型..." v-model="editor.type" value-key="id" :disabled="!store.forum.types.length">
-                        <el-option v-for="item in store.forum.types" :value="item" :label="item.name">
+                        <el-option v-for="item in store.forum.types.filter(type => type.id > 0)" :value="item" :label="item.name">
                             <div>
                                 <color-dot :color="item.color"/>
                                 <span style="margin-left: 5px">{{item.name}}</span>

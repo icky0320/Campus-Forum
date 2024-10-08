@@ -1,5 +1,7 @@
 package com.example.config;
 
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,12 +29,10 @@ public class WebConfiguration implements WebMvcConfigurer {
         return new RestTemplate();
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // 所有路径
-                .allowedOrigins("http://localhost:8080","http://localhost:5173") // 允许的源
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 允许的方法
-                .allowedHeaders("*") // 允许的请求头
-                .allowCredentials(true); // 是否允许发送认证信息
+    @Bean
+    public PaginationInnerInterceptor paginationInterceptor(){
+        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
+        paginationInnerInterceptor.setMaxLimit(100L);
+        return paginationInnerInterceptor;
     }
 }
