@@ -22,7 +22,11 @@ const topic = reactive({
     comments: []
 })
 
-get(`api/forum/topic?tid=${tid}`, data => topic.data = data)
+get(`api/forum/topic?tid=${tid}`, data => {
+    topic.data = data
+    topic.like = data.interact.like
+    topic.collect = data.interact.collect
+})
 
 const content = computed(()=>{
     const ops = JSON.parse(topic.data.content).ops
@@ -83,6 +87,10 @@ function interact(type, message){
             </div>
             <div class="topic-main-right">
                 <div class="topic-content" v-html="content"></div>
+                <el-divider/>
+                <div style="font-size: 13px;color: grey;text-align: center;margin-top: 40px;">
+                    <div>{{new Date(topic.data.time).toLocaleString()}}</div>
+                </div>
                 <div style="text-align: right;margin-top: 30px">
                     <interact-button name="点个赞吧" check-name="已点赞~" color="pink" :check="topic.like"
                                      @check="interact('like', '喜欢')">
