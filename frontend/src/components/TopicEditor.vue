@@ -188,7 +188,6 @@ const editorOption = {
                 <span style="margin-left: 5px;">
                   {{editor.type ? editor.type.desc : '请在上方选择一个帖子类型！'}}
                 </span>
-
             </div>
             <div style="margin-top: 10px;height: 440px;overflow: hidden;border-radius: 5px"
                  v-loading="editor.uploading" element-loading-text="正在上传图片，请稍后...">
@@ -213,22 +212,8 @@ const editorOption = {
     width: 800px;
     margin: auto;
     border-radius: 10px 10px 0 0;
-
 }
 :deep(.el-drawer__header){
     margin: 0;
-}
-:deep(.el-drawer__header){
-    margin: 0;
-}
-:deep(.el-drawer__header){
-    margin: 0;
-}
-:deep(.ql-editor.ql-blank::before){
-    color: var(--el-text-color-placeholder);
-    font-style: normal;
-}
-:deep(.ql-editor){
-    font-size: 14px;
 }
 </style>
