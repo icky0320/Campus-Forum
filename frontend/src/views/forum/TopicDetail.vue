@@ -30,7 +30,7 @@ const edit = ref(false)
 const comment = reactive({
     show: false,
     text: '',
-    quote: -1
+    quote: null
 })
 
 get(`api/forum/topic?tid=${tid}`, data => {
@@ -86,6 +86,13 @@ function loadComments(page){
 function onCommentAdd(){
     comment.show = false
     loadComments( Math.floor(++topic.data.comments / 10) + 1)
+}
+
+function deleteComment(id) {
+    get(`/api/forum/delete-comment?id=${id}`, () => {
+        ElMessage.success('删除评论成功！')
+        loadComments(topic.page)
+    })
 }
 </script>
 
@@ -205,13 +212,22 @@ function onCommentAdd(){
                       :default-title="topic.data.title" submit-button="更新帖子内容" :submit="updateTopic"/>
         <topic-comment-editor :show="comment.show" @close="comment.show = false" :tid="tid"
                               :quote="comment.quote" @comment="onCommentAdd"/>
-        <div class="add-comment" @click="comment.show = true" >
+        <div class="add-comment" @click="comment.show = true;comment.quote = null" >
             <el-icon><Plus/></el-icon>
         </div>
     </div>
 </template>
 
 <style scoped>
+.comment-quote {
+    font-size: 13px;
+    color: grey;
+    background-color: rgba(94, 94, 94, 0.1);
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
 .add-comment{
     position: fixed;
     bottom: 20px;
