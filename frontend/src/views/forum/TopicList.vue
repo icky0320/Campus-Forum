@@ -19,7 +19,6 @@ import {get} from "@/net/index.js";
 import {ElMessage} from "element-plus";
 import TopicEditor from "@/components/TopicEditor.vue";
 import {useStore} from "@/store/index.js";
-import axios from "axios";
 import ColorDot from "@/components/ColorDot.vue";
 import router from "@/router/index.js";
 import TopicTag from "@/components/TopicTag.vue";
@@ -133,7 +132,7 @@ navigator.geolocation.getCurrentPosition(position => {
                                     @click="router.push('/index/topic-detail/'+item.id)">
                             <div style="display: flex">
                                 <div>
-                                    <el-avatar :size="30" :src="`${axios.defaults.baseURL}/images${item.avatar}`"/>
+                                    <el-avatar :size="30" :src="store.avatarUserUrl(item.avatar)"/>
                                 </div>
                                 <div style="margin-left: 7px;transform: translateY(-2px)">
                                     <div style="font-size: 13px;font-weight: bold;">{{item.username}}</div>

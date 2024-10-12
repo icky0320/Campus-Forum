@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+    import { createRouter, createWebHistory } from 'vue-router'
 import { unauthorized } from "@/net";
 
 const router = createRouter({
