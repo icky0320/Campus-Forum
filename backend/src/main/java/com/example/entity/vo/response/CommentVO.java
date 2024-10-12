@@ -1,6 +1,5 @@
 package com.example.entity.vo.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,33 +8,22 @@ import java.util.Date;
  * @Author: 程凯
  * @Package: com.example.entity.vo.response
  * @Project: jwt
- * @Name: TopicDetailVO
- * @Date: 2024/10/8  上午9:12
+ * @Name: CommentVO
+ * @Date: 2024/10/12  上午10:51
  */
 @Data
-public class TopicDetailVO {
-    Integer id;
-    String title;
+public class CommentVO {
+    int id;
     String content;
-    Integer type;
     Date time;
+    String quote;
     User user;
-    Interact interact;
-    Long comments;
-
-    @Data
-    @AllArgsConstructor
-    public static class Interact{
-        Boolean like;
-        Boolean collect;
-    }
 
     @Data
     public static class User{
         Integer id;
         String username;
         String avatar;
-        String desc;
         Integer gender;
         String qq;
         String wx;
